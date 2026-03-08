@@ -1,9 +1,19 @@
 #!/bin/bash
 
 ENV=$1
-echo "Deploying to $ENV environment..."
 
-docker stop mern-app-$ENV || true
-docker rm mern-app-$ENV || true
+if [ "$ENV" = "dev" ]; then
+  PORT=3000
+  NAME="mern-app-dev"
+elif [ "$ENV" = "staging" ]; then
+  PORT=3001
+  NAME="mern-app-staging"
+elif [ "$ENV" = "prod" ]; then
+  PORT=3002
+  NAME="mern-app-prod"
+fi
 
-docker run -d -p 3000:3000 --name mern-app-$ENV mern-jenkins-app
+docker stop $NAME || true
+docker rm $NAME || true
+
+docker run -d -p $PORT:3000 --name $NAME mern-jenkins-app
